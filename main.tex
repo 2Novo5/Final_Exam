@@ -131,6 +131,26 @@ we show a qualitative example of the obtained normal field.
     \label{fig:Fig4}
 \end{figure}
 
+
+\subsection{Other datasets}
+
+    We also tested our method on a dataset of general ob-
+jects presented in [3]. In this case it is difficult to provide an
+oracle because it contains scenes with different kind (dif-
+fuse/specular) and degrees of polarization. So, we limit
+our test to the observation of how the pre/post processing
+can improve an existing SfP method. Similarly to what we
+did with planes dataset, we compare \textit{Smith}, \textit{Smith corrected},
+\textit{SfPW} and \textit{DeepSfP} [3]. The latter method is a Deep model
+assuming an orthographic camera, so potentially is a valid
+candidate to be corrected with our model. However, at the
+time of writing, the code and pre-trained weights were not
+publicly available so we report here the results shown in
+the original paper. \cref{tab:Tab3} show the MAE of the estimated
+normals in the whole dataset. SfPW is the best performing
+method, followed by DeepSfP. It is interesting to observe
+that, also in this case, Smith corrected with our model ob-
+tains a significant improvement.
 {\small
 \bibliographystyle{IEEEtran}
 \bibliography{Ref}
