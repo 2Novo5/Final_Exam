@@ -151,6 +151,30 @@ normals in the whole dataset. SfPW is the best performing
 method, followed by DeepSfP. It is interesting to observe
 that, also in this case, Smith corrected with our model ob-
 tains a significant improvement.
+
+\section{Conclusions}
+
+    We presented a model to describe how a projective cam-
+era captures the light polarization state. Differently than
+the empirical PPA model \cite{atkinson2006recovery}, our formulation derives by
+the optical properties of the tilted polarizer and the algebra
+of Mueller matrices. We consider it as a unifying model,
+equally valid to DoFP and ToFP cameras (i.e. with polariz-
+ers above the sensor or in front of the lenses) and consistent
+with conventions used by polarization-aware renderers. It
+allows to embed demosaicing of DoFP cameras directly in
+the Stokes estimation and, finally, can be implemented by
+means of a pre-processing of acquired raw data and post-
+processing of the reconstructed surface normals. In the ex-
+perimental section we observed a good agreement between
+the obtained Stokes vector (in terms of AoLP and DoLP
+linked to the surface normals) and the expected one deriv-
+ing by the geometry of some controlled planar scenes. For
+the future, we aim to generalize our model to include lens
+distortion, vignetting on acquired DoLP due to the Umov’s
+effect, and noise deriving by cross-talking between pixels.
+
+
 {\small
 \bibliographystyle{IEEEtran}
 \bibliography{Ref}
