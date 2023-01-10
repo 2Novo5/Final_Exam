@@ -1,4 +1,5 @@
 \documentclass[letterpaper, 6 pt, journal, twoside]{IEEEtran}
+\usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{graphicx}
@@ -9,7 +10,7 @@
 
 \begin{figure}
     \centering
-    \includegraphics{images/Figure_3.png} 
+    \includegraphics[width=6cm]{images/Figure_3.png} 
     \caption{Plane normal error distributions for our method and PPA.}
     \label{fig:Fig3}
 \end{figure}
@@ -50,13 +51,85 @@ under-determined in the Orthographic model because all the
 rays are parallel ($R_1 , . . . R_k$ are identities) and all the pixels
 would observe the same $\phi$. In the PPA model, instead, a
 similar costraint is provided (See Eq. 7 in \cite{chen2022perspective}).
-In \cref{fig:Fig3} we plotted the the estimated plane normal er-
+    
+    In \cref{fig:Fig3} we plotted the the estimated plane normal er-
 ror distribution against the Ground Truth data in the PPA
 dataset. The Ortho model is not present in the plot for the
 reasons discussed before. Also in this case, our mean abso-
 lute error is lower (1.57\textdegree vs. 2.89\textdegree) and with less variabil-
 ity. This reflects a better estimation of the AoLP due to the
 correction applied by the tilted polarizer model.
+
+\subsection{Normal estimation}
+
+    Our work is not a SfP method, so evaluating its valid-
+ity based on how well a normal field is reconstructed has to
+be done with care. We recall that the azimuth angle of $\Vec{n}$ is
+equal to the AoLP $\phi$ up to a (unavoidable) $\pi$-ambiguity, and
+an additional $\pi/2$-ambiguity depending if specular or diffuse
+reflection dominates. Since in the plane dataset the specu-
+lar reflection is dominant, we used the following function
+to relate the DoLP $\rho$ with zenith angle $\theta$ and the index of
+refraction $\mathbf{n}$ :
+
+\begin{equation}
+        \rho(\mathbf{n},\theta) = a \frac{2\sin^2\theta\cos\theta\sqrt{\mathbf{n}^2 - \sin^2\theta}}{\mathbf{n}^2-\sin^2\theta-\mathbf{n}^2\sin^2\theta+2\sin^4\theta}
+        \label{eq:Eq16}
+\end{equation}
+
+where a is a scale parameter we added to the original formu-
+lation shown in \cite{atkinson2006recovery} to account for a possible diffuse compo-
+nent of reflection and other nonlinear contribution like the
+Umov’s effect [\cite{kupinski2019angle}, \cite{umow1905chromatische}].
+To show the validity of our approach, the idea is to test
+how well our model allows the recovery of surface normals
+in ideal conditions, i.e. with an oracle that removes the
+ambiguities and provides a close estimate of the unknown
+parameters $\mathbf{n}$, a in \cref{eq:Eq16}) Since we know the Ground
+Truth normals of both the datasets, we manually estimated
+the best value of the two parameters and computed the er-
+rors considering the minimum error among all the possi-
+ble ambiguities. We compare the resulting normal field
+against: (i) the \textit{orthographic} model using the same ora-
+cle as our method (i.e. estimated function $\rho$ and optimal
+disambiguator); (ii) \textit{Smith} et al. [26]; (iii) \textit{Smith corrected}
+with our pre/post processing to account for projective cam-
+era, and (iv) SfPW [19], a Deep CNN with a multi-head
+self-attention module and viewing encoding “to account for
+non-orthographic projection in scene-level”. We used the
+original author implementation pre-trained on their SPW
+Dataset.
+
+    We listed the MAE and RMSE of the estimated normals
+in \cref{tab:Tab2}. Normals recovered with our projective model are
+significantly more accurate than the others. This is not sur-
+prising, since we assume to have an oracle that resolves all
+the unknowns we usually face when doing SfP. The impor-
+tant thing to notice here is the improvement against the or-
+thographic model that uses the same oracle. In other words,
+properly accounting for non orthographic projection is cru-
+cial to reduce the error, no matter how sophisticated is the
+method applied to solve the ambiguities. Moreover, the
+\textit{Smith corrected} performs better than the original one be-
+cause can now accounts for non-orthographic cameras. We
+stress that this correction was performed as pre/post pro-
+cessing without modifying any other part of the method. Fi-
+nally, SfPW performs well but not better than the “simple”
+Orthographic model. Considering that SfPW can take into
+account non-orthographic cameras, we expected a lower er-
+ror in this experiment. In general, SfP is difficult to solve
+without posing additional strong priors to the reconstructed
+scene, and learning-based method can only try to resolve
+the ambiguities based on what observed on the training set,
+with the risk of overfitting specific 3D structures. In \cref{fig:Fig4}
+we show a qualitative example of the obtained normal field.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=18cm]{images/Figure_4.png} 
+    \caption{Qualitative comparison of the estimated normal field with methods Ortho (left), Our (center), and SfPW (right) on an instance of the PPA dataset. Errors are computed only inside the plane area but we kept the rest of the scene for visualization purposes. Note how a radial pattern is visible in the Ortho model since the distortion due to the ray orientation is not accounted for. SfPw performs poorly because it has been trained on a much noisier dataset and apparently is not able to generalize to simpler scenarios.}
+    \label{fig:Fig4}
+\end{figure}
 
 {\small
 \bibliographystyle{IEEEtran}
